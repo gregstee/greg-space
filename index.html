@@ -198,7 +198,11 @@ function img(p, cls) {
   const el = document.createElement("img");
   if (cls) el.className = cls;
   el.alt = p.title; el.loading = "lazy"; el.src = imgSrc(p);
-  el.onerror = () => { el.onerror = null; el.src = PLACEHOLDER; };
+  let tries = 0;
+  el.onerror = () => {
+    if (tries < 3) { tries++; setTimeout(() => { el.src = imgSrc(p) + "?r=" + tries + Date.now(); }, 800 * tries + Math.random() * 1500); }
+    else { el.onerror = null; el.src = PLACEHOLDER; }
+  };
   return el;
 }
 
@@ -223,7 +227,7 @@ shuffled.slice(0, 8).forEach(({p, i}) => {
 // Full gallery: thumbnail (click to enlarge) + download button
 const g = document.getElementById("gallerygrid");
 const moreBtn = document.getElementById("more");
-const PAGE_SIZE = 48;
+const PAGE_SIZE = 100000;
 let shown = 0;
 function renderMore() {
   list.slice(shown, shown + PAGE_SIZE).forEach((p, k) => {
