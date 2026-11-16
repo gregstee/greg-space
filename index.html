@@ -277,7 +277,19 @@ document.addEventListener("keydown", e => {
 // Fun extras
 const moods = ["😎 chilled","📷 snap happy","🎶 vibing","☕ caffeinated","🐶 walkies time"];
 document.getElementById("mood").textContent = moods[Math.floor(Math.random() * moods.length)];
-document.getElementById("counter").textContent = String(1000 + Math.floor(Math.random() * 8000)).padStart(6, "0");
+// Real page counter (abacus.jasoncameron.dev): counts once per browser session
+(function () {
+  const el = document.getElementById("counter");
+  const show = n => { el.textContent = String(n).padStart(6, "0"); };
+  const base = "https://abacus.jasoncameron.dev/";
+  const path = "gregstee-greg-space/views";
+  let counted = false;
+  try { counted = sessionStorage.getItem("counted") === "1"; } catch (e) {}
+  fetch(base + (counted ? "get/" : "hit/") + path)
+    .then(r => r.json())
+    .then(d => { show(d.value); try { sessionStorage.setItem("counted", "1"); } catch (e) {} })
+    .catch(() => { el.textContent = "------"; });
+})();
 const af = document.getElementById("addFriend");
 af.onclick = () => { af.textContent = "✔ Friend request sent!"; };
 </script>
