@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Greg's Space | Photo Page</title>
+<style>
+  body{margin:0;font:13px/1.4 Verdana,Arial,sans-serif;color:#000;
+    background:#0a0a2a url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Crect width='120' height='120' fill='%230a0a2a'/%3E%3Ccircle cx='15' cy='20' r='1.5' fill='%23fff'/%3E%3Ccircle cx='70' cy='45' r='1' fill='%23ffd54f'/%3E%3Ccircle cx='100' cy='90' r='1.5' fill='%23ff80ab'/%3E%3Ccircle cx='40' cy='100' r='1' fill='%2380d8ff'/%3E%3Ccircle cx='90' cy='10' r='1' fill='%23fff'/%3E%3C/svg%3E");}
+  a{color:#036;} a:hover{color:#e8590c}
+  .wrap{max-width:900px;margin:0 auto;background:#fff;border-left:3px solid #ff9933;border-right:3px solid #ff9933}
+  .top{background:#e8f0fb;padding:6px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #6699cc;font-size:11px;gap:8px;flex-wrap:wrap}
+  .logo{font:bold 22px Georgia,serif;color:#003399;font-style:italic}
+  .logo span{color:#ff6600}
+  .nav{background:#6699cc;padding:4px 12px;font-size:11px}
+  .nav a{color:#fff;margin-right:10px;text-decoration:none;font-weight:bold}
+  .nav a:hover{text-decoration:underline;color:#ffe}
+  .marquee{background:#ffe9b3;border-bottom:1px solid #ff9933;overflow:hidden;white-space:nowrap;font-weight:bold;color:#b30059}
+  .marquee span{display:inline-block;padding-left:100%;animation:scroll 18s linear infinite}
+  @keyframes scroll{to{transform:translateX(-100%)}}
+  .cols{display:flex;gap:14px;padding:14px;flex-wrap:wrap}
+  .left{flex:0 0 250px}
+  .right{flex:1;min-width:280px}
+  h1{font-size:20px;margin:0 0 6px;color:#003399}
+  .box{border:1px solid #6699cc;margin-bottom:12px}
+  .box h2{margin:0;background:#6699cc;color:#fff;font-size:12px;padding:3px 8px}
+  .box .in{padding:8px}
+  .box.org h2{background:#ff9933}
+  .box.org{border-color:#ff9933}
+  .avatar{width:100%;aspect-ratio:1;background:#ddd;border:1px solid #999;display:block;object-fit:cover}
+  .online{color:#090;font-weight:bold}
+  table.d{width:100%;border-collapse:collapse;font-size:12px}
+  table.d td{padding:3px 4px;border-bottom:1px dotted #ccc;vertical-align:top}
+  table.d td:first-child{font-weight:bold;color:#036;width:38%}
+  .btn{display:inline-block;background:#ff9933;color:#fff;font-weight:bold;text-decoration:none;padding:4px 10px;border:1px solid #cc6600;border-radius:3px;font-size:12px;cursor:pointer;font-family:inherit}
+  .btn:hover{background:#ff7700;color:#fff}
+  .btn.blue{background:#6699cc;border-color:#336699}
+  .btn.blue:hover{background:#4477aa;color:#fff}
+  .glitter{font-weight:bold;background:linear-gradient(90deg,#ff00cc,#ffcc00,#00ccff,#ff00cc);background-size:300%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:g 3s linear infinite}
+  @keyframes g{to{background-position:300%}}
+  .top8{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center}
+  .top8 button{all:unset;cursor:pointer;font-size:11px;font-weight:bold;color:#036}
+  .top8 button:hover{color:#e8590c}
+  .top8 .t{aspect-ratio:1;width:100%;object-fit:cover;border:1px solid #999;display:block;margin-bottom:2px;background:#eee}
+  .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+  .card{border:1px solid #ccc;background:#f7f9fd;padding:6px;text-align:center}
+  .card .thumb{all:unset;cursor:zoom-in;display:block;width:100%}
+  .card img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#ddd;margin-bottom:5px;border:1px solid #bbb}
+  .card .thumb:hover img{border-color:#ff9933}
+  .card .n{font-size:11px;font-weight:bold;margin-bottom:5px;word-break:break-word}
+  .note{font-size:11px;color:#666;margin-top:6px}
+  .comment{display:flex;gap:8px;padding:6px 0;border-bottom:1px dotted #ccc}
+  .comment .pic{width:46px;height:46px;background:#cde;flex:none;display:flex;align-items:center;justify-content:center;font-size:22px;border:1px solid #999}
+  .foot{text-align:center;font-size:10px;color:#666;padding:10px;border-top:1px solid #ccc}
+  .counter{font:bold 14px "Courier New",monospace;background:#000;color:#0f0;padding:2px 6px;letter-spacing:2px}
+  .player{background:#222;color:#fff;padding:8px;border-radius:4px;font-size:11px}
+  .player b{color:#ff9933}
+
+  /* ---- Photo viewer (pop-up) ---- */
+  #lb{position:fixed;inset:0;background:rgba(0,0,20,.85);display:none;align-items:center;justify-content:center;z-index:50;padding:10px}
+  #lb.open{display:flex}
+  .lbbox{background:#fff;border:3px solid #ff9933;max-width:min(96vw,900px);width:100%;max-height:96vh;display:flex;flex-direction:column}
+  .lbbar{background:#6699cc;color:#fff;font-weight:bold;font-size:12px;padding:4px 8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .lbbar .x{all:unset;cursor:pointer;background:#ff9933;padding:0 8px;border:1px solid #cc6600;font-weight:bold}
+  .lbbody{padding:8px;text-align:center;overflow:auto;background:#eef3fb}
+  .lbbody img{max-width:100%;max-height:64vh;object-fit:contain;border:1px solid #666;background:#ddd}
+  .lbfoot{padding:8px;display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;border-top:1px solid #6699cc}
+  .lbfoot .count{font-size:11px;color:#666}
+  .btn.off{background:#bbb;border-color:#999;pointer-events:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <div class="logo">Greg's<span>Space</span> <small style="font-size:11px;font-style:normal;color:#666">a place for photos</small></div>
+    <div>Hello, Guest! &nbsp;|&nbsp; <a href="#gallery">Browse</a> &nbsp;|&nbsp; <a href="#gallery">Download</a></div>
+  </div>
+  <div class="nav">
+    <a href="#home">Home</a><a href="#top8">Top 8</a><a href="#gallery">All Photos</a><a href="#comments">Comments</a><a href="#about">About Me</a>
+  </div>
+  <div class="marquee"><span>★ Welcome to my page ★ Click a photo to see it bigger ★ Hit "Download" to save the full-size original ★ Leave a comment! ★</span></div>
+
+  <div class="cols" id="home">
+
+    <!-- LEFT COLUMN -->
+    <div class="left">
+      <h1 class="glitter">Greg</h1>
+      <div class="box">
+        <div class="in">
+          <img id="avatar" class="avatar" alt="Profile picture">
+          <p style="margin:6px 0 0">"Photographer, maker, dog walker"<br>Prestwich, Manchester, UK<br>
+          <span class="online">● Online Now!</span></p>
+          <p style="margin:6px 0 0"><span class="btn blue" id="addFriend">Add to Friends</span></p>
+        </div>
+      </div>
+
+      <div class="box org">
+        <h2>Greg's Details</h2>
+        <div class="in">
+          <table class="d">
+            <tr><td>Status:</td><td>Single, taking photos</td></tr>
+            <tr><td>Here for:</td><td>Sharing pics</td></tr>
+            <tr><td>Mood:</td><td id="mood">😎 chilled</td></tr>
+            <tr><td>View my:</td><td><a href="#gallery">Photos</a></td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="box">
+        <h2>Now Playing</h2>
+        <div class="in">
+          <div class="player"><b>♫</b> Your song goes here<br><span style="color:#aaa">(just for show)</span></div>
+        </div>
+      </div>
+
+      <div class="box">
+        <h2>Page Views</h2>
+        <div class="in" style="text-align:center"><span class="counter" id="counter">000000</span></div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="right">
+
+      <div class="box org" id="about">
+        <h2>Greg's Blurbs</h2>
+        <div class="in">
+          <b>About me:</b><br>
+          Welcome to my photo page! Click any photo to see it bigger, and download the full-size original if you like it.<br><br>
+          <b>Who I'd like to meet:</b><br>
+          Anyone who likes a good photo.
+        </div>
+      </div>
+
+      <div class="box" id="top8">
+        <h2>Greg's Top 8 Photos</h2>
+        <div class="in">
+          <div class="top8" id="top8grid"></div>
+        </div>
+      </div>
+
+      <div class="box org" id="gallery">
+        <h2>All Photos (click a photo to enlarge)</h2>
+        <div class="in">
+          <div class="gallery" id="gallerygrid"></div>
+          <p style="text-align:center;margin-top:10px"><button class="btn" id="more" type="button">Load more photos</button></p>
+          <p class="note">"Download" fetches the full-size original from Google Drive, so files can be large.</p>
+        </div>
+      </div>
+
+      <div class="box" id="comments">
+        <h2>Comments</h2>
+        <div class="in">
+          <div class="comment"><div class="pic">🐶</div><div><b>Raffie</b> <small>says:</small><br>Woof! More walkies pics please!!</div></div>
+          <div class="comment"><div class="pic">📷</div><div><b>Photo Fan</b> <small>says:</small><br>Love these shots. Saving a few!</div></div>
+          <p class="note">(Comments are just for show.)</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="foot">© Greg's Space &nbsp;|&nbsp; Made with love and too much glitter</div>
+</div>
+
+<!-- Photo viewer pop-up -->
+<div id="lb" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <div class="lbbox">
+    <div class="lbbar"><span id="lbtitle">Photo</span><button class="x" id="lbclose" aria-label="Close">X</button></div>
+    <div class="lbbody"><img id="lbimg" alt=""></div>
+    <div class="lbfoot">
+      <button class="btn blue" id="lbprev">« Prev</button>
+      <span class="count" id="lbcount"></span>
+      <button class="btn blue" id="lbnext">Next »</button>
+      <a class="btn" id="lbdl" href="#" target="_blank" rel="noopener">⬇ Download original</a>
+    </div>
+  </div>
+</div>
+
+<script src="photos.js"></script>
+<script>
+const PHOTO_FOLDER = "photos/";   // folder in your repo holding the small copies
+
+/* ---------- Everything below just builds the page ---------- */
+const PLACEHOLDER = "data:image/svg+xml;utf8," + encodeURIComponent(
+  "<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300'><rect width='400' height='300' fill='#dfe8f5'/>" +
+  "<text x='200' y='145' font-family='Verdana' font-size='22' font-weight='bold' text-anchor='middle' fill='#6699cc'>Your photo</text>" +
+  "<text x='200' y='175' font-family='Verdana' font-size='22' font-weight='bold' text-anchor='middle' fill='#6699cc'>goes here</text></svg>");
+
+const imgSrc = p => p.file ? PHOTO_FOLDER + p.file : PLACEHOLDER;
+const dlLink = p => p.id ? "https://drive.google.com/uc?export=download&id=" + p.id : "";
+
+// With no photos yet, show 8 sample slots so you can see the layout.
+const list = PHOTOS.length ? PHOTOS : Array.from({length: 8}, (_, i) => ({file: "", id: "", title: "Photo " + (i + 1)}));
+
+function img(p, cls) {
+  const el = document.createElement("img");
+  if (cls) el.className = cls;
+  el.alt = p.title; el.loading = "lazy"; el.src = imgSrc(p);
+  el.onerror = () => { el.onerror = null; el.src = PLACEHOLDER; };
+  return el;
+}
+
+document.getElementById("avatar").src = imgSrc(list[0]);
+document.getElementById("avatar").onerror = function () { this.onerror = null; this.src = PLACEHOLDER; };
+
+// Top 8: a random 8 photos, reshuffled on every refresh (click to enlarge)
+const t8 = document.getElementById("top8grid");
+const shuffled = list.map((p, i) => ({p, i}));
+for (let k = shuffled.length - 1; k > 0; k--) {          // Fisher-Yates shuffle
+  const j = Math.floor(Math.random() * (k + 1));
+  [shuffled[k], shuffled[j]] = [shuffled[j], shuffled[k]];
+}
+shuffled.slice(0, 8).forEach(({p, i}) => {
+  const b = document.createElement("button");
+  b.type = "button"; b.onclick = () => openLB(i);
+  b.appendChild(img(p, "t"));
+  b.appendChild(document.createTextNode(p.title));
+  t8.appendChild(b);
+});
+
+// Full gallery: thumbnail (click to enlarge) + download button
+const g = document.getElementById("gallerygrid");
+const moreBtn = document.getElementById("more");
+const PAGE_SIZE = 48;
+let shown = 0;
+function renderMore() {
+  list.slice(shown, shown + PAGE_SIZE).forEach((p, k) => {
+    const i = shown + k;
+    const c = document.createElement("div"); c.className = "card";
+    const t = document.createElement("button"); t.type = "button"; t.className = "thumb";
+    t.onclick = () => openLB(i); t.appendChild(img(p)); c.appendChild(t);
+    const n = document.createElement("div"); n.className = "n"; n.textContent = p.title; c.appendChild(n);
+    const b = document.createElement("a"); b.className = "btn"; b.textContent = "⬇ Download";
+    if (p.id) { b.href = dlLink(p); b.target = "_blank"; b.rel = "noopener"; } else { b.href = "#gallery"; }
+    c.appendChild(b);
+    g.appendChild(c);
+  });
+  shown = Math.min(shown + PAGE_SIZE, list.length);
+  moreBtn.textContent = "Load more photos (" + shown + " of " + list.length + " showing)";
+  moreBtn.parentNode.style.display = shown >= list.length ? "none" : "block";
+}
+moreBtn.onclick = renderMore;
+renderMore();
+
+// Pop-up viewer
+const lb = document.getElementById("lb"), lbimg = document.getElementById("lbimg");
+const lbdl = document.getElementById("lbdl");
+let cur = 0;
+function showLB() {
+  const p = list[cur];
+  document.getElementById("lbtitle").textContent = p.title;
+  lbimg.alt = p.title; lbimg.onerror = () => { lbimg.onerror = null; lbimg.src = PLACEHOLDER; };
+  lbimg.src = imgSrc(p);
+  document.getElementById("lbcount").textContent = (cur + 1) + " of " + list.length;
+  if (p.id) { lbdl.href = dlLink(p); lbdl.classList.remove("off"); } else { lbdl.href = "#"; lbdl.classList.add("off"); }
+}
+function openLB(i) { cur = i; showLB(); lb.classList.add("open"); }
+function closeLB() { lb.classList.remove("open"); }
+function step(d) { cur = (cur + d + list.length) % list.length; showLB(); }
+document.getElementById("lbclose").onclick = closeLB;
+document.getElementById("lbprev").onclick = () => step(-1);
+document.getElementById("lbnext").onclick = () => step(1);
+lb.addEventListener("click", e => { if (e.target === lb) closeLB(); });
+document.addEventListener("keydown", e => {
+  if (!lb.classList.contains("open")) return;
+  if (e.key === "Escape") closeLB();
+  if (e.key === "ArrowLeft") step(-1);
+  if (e.key === "ArrowRight") step(1);
+});
+
+// Fun extras
+const moods = ["😎 chilled","📷 snap happy","🎶 vibing","☕ caffeinated","🐶 walkies time"];
+document.getElementById("mood").textContent = moods[Math.floor(Math.random() * moods.length)];
+document.getElementById("counter").textContent = String(1000 + Math.floor(Math.random() * 8000)).padStart(6, "0");
+const af = document.getElementById("addFriend");
+af.onclick = () => { af.textContent = "✔ Friend request sent!"; };
+</script>
+</body>
+</html>
